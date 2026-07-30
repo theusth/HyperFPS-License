@@ -272,6 +272,7 @@
     }
 
     .actions button.alt{background:#271132}
+    .actions button.danger{background:#9b193d;border-color:#c32c59}
 
     .log{
       padding:13px 14px;
@@ -546,6 +547,10 @@
               <button onclick="toggleStatus('${esc(user.id)}','${esc(user.status)}')">
                 ${user.status === 'blocked' ? 'Desbloquear' : 'Bloquear'}
               </button>
+
+              <button class="danger" onclick="deleteUser('${esc(user.id)}','${esc(user.username)}')">
+                Excluir
+              </button>
             </div>
           </article>
         `;
@@ -688,6 +693,29 @@
         );
 
         await loadUsers();
+      } catch (error) {
+        showMessage(error.message, true);
+      }
+    };
+
+
+    window.deleteUser = async (id, username) => {
+      const confirmed = confirm(
+        `Excluir o usuário "${username}" e invalidar a key permanentemente?`
+      );
+
+      if (!confirmed) return;
+
+      try {
+        await api(`/api/admin/users/${encodeURIComponent(id)}`, {
+          method:'DELETE'
+        });
+
+        showMessage('Usuário e key excluídos.');
+        await Promise.all([
+          loadUsers(),
+          loadLogs()
+        ]);
       } catch (error) {
         showMessage(error.message, true);
       }
