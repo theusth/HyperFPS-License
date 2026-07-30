@@ -1,772 +1,86 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HyperFPS Admin</title>
-  <style>
-    :root{
-      --bg:#05030a;
-      --panel:#100719;
-      --panel-2:#0b050f;
-      --line:#5e1a8c;
-      --line-soft:#351545;
-      --purple:#8b16ff;
-      --purple-2:#c01fff;
-      --text:#ffffff;
-      --muted:#b9aac6;
-      --green:#45ec79;
-      --red:#ff5d76;
-      --orange:#ffb64d;
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:Inter,Segoe UI,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 15% 0%,rgba(129,23,255,.20),transparent 30%),
-        radial-gradient(circle at 90% 15%,rgba(191,31,255,.12),transparent 25%),
-        linear-gradient(180deg,#05020a 0%,#020104 100%);
-    }
-
-    button,input,select{font:inherit}
-    button{cursor:pointer}
-    .hidden{display:none!important}
-
-    .login{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:24px;
-    }
-
-    .login-card{
-      width:min(460px,94vw);
-      padding:34px;
-      border:1px solid var(--purple);
-      border-radius:22px;
-      background:rgba(9,4,15,.96);
-      box-shadow:0 0 80px rgba(121,24,255,.28);
-      text-align:center;
-    }
-
-    .logo{
-      width:96px;
-      height:96px;
-      display:grid;
-      place-items:center;
-      margin:0 auto 18px;
-      border-radius:24px;
-      font-size:35px;
-      font-weight:1000;
-      background:linear-gradient(135deg,var(--purple),var(--purple-2));
-      box-shadow:0 0 35px rgba(183,31,255,.42);
-    }
-
-    .login-card h1{margin:0 0 8px;font-size:30px}
-    .login-card p{margin:0 0 24px;color:var(--muted)}
-    .login-card input{margin-bottom:13px}
-
-    input,select{
-      width:100%;
-      padding:14px 15px;
-      border:1px solid #45255a;
-      border-radius:10px;
-      background:#08050d;
-      color:#fff;
-      outline:none;
-    }
-
-    input:focus,select:focus{
-      border-color:var(--purple);
-      box-shadow:0 0 0 3px rgba(139,22,255,.14);
-    }
-
-    .btn{
-      border:0;
-      border-radius:10px;
-      color:#fff;
-      font-weight:900;
-      padding:13px 17px;
-      background:linear-gradient(90deg,#7813eb,#bb20ee);
-    }
-
-    .btn:hover{filter:brightness(1.08)}
-    .btn.secondary{background:#241030;border:1px solid #5b2977}
-    .btn.danger{background:#9b193d}
-    .btn.small{padding:9px 12px;font-size:12px}
-    .btn.full{width:100%}
-
-    .message{min-height:22px;margin:14px 0 0;color:var(--red)}
-
-    .app{min-height:100vh}
-
-    .topbar{
-      width:min(1500px,94vw);
-      margin:0 auto;
-      padding:34px 0 22px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:18px;
-    }
-
-    .topbar h1{margin:0;font-size:34px}
-    .eyebrow{
-      margin:0 0 5px;
-      color:#c66cff;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.18em;
-    }
-
-    .top-actions{
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-
-    .online{color:var(--green);font-size:13px;font-weight:800}
-
-    main{
-      width:min(1500px,94vw);
-      margin:0 auto;
-      padding-bottom:50px;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:14px;
-      margin-bottom:18px;
-    }
-
-    .stats article{
-      padding:20px;
-      border:1px solid var(--line-soft);
-      border-radius:15px;
-      background:linear-gradient(180deg,rgba(20,8,33,.98),rgba(9,5,15,.98));
-    }
-
-    .stats span{color:var(--muted);font-size:13px}
-    .stats strong{display:block;margin-top:8px;font-size:34px;color:#c45bff}
-
-    .panel{
-      margin-bottom:18px;
-      padding:26px;
-      border:1px solid var(--line);
-      border-radius:20px;
-      background:linear-gradient(180deg,rgba(18,8,30,.98),rgba(9,5,15,.98));
-    }
-
-    .panel-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:18px;
-      margin-bottom:22px;
-    }
-
-    .panel-head h2{margin:0;font-size:26px}
-
-    .form-grid{
-      display:grid;
-      grid-template-columns:1.2fr 1.2fr 1fr .8fr;
-      gap:14px;
-      align-items:end;
-    }
-
-    label{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      color:#dfd2e8;
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .span-2{grid-column:span 2}
-    .form-grid .btn{height:48px}
-
-    .generated{
-      margin-top:18px;
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      border:1px solid #4e2171;
-      border-radius:12px;
-      background:#08050d;
-    }
-
-    .generated span{font-size:12px;color:#ca6cff;font-weight:900}
-    .generated code{word-break:break-all}
-    .generated .btn{margin-left:auto}
-
-    .tools{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .tools input{min-width:300px}
-
-    .users{
-      display:grid;
-      gap:10px;
-    }
-
-    .user{
-      display:grid;
-      grid-template-columns:1.3fr .7fr .8fr .8fr 1fr auto;
-      gap:14px;
-      align-items:center;
-      padding:16px;
-      border:1px solid #3b1a50;
-      border-radius:12px;
-      background:#08050d;
-    }
-
-    .user strong{display:block;font-size:16px}
-    .user small{color:var(--muted)}
-    .label{font-size:11px;color:#8e7c9d;text-transform:uppercase;letter-spacing:.08em}
-    .value{margin-top:4px;font-size:13px}
-    .status-active{color:var(--green)}
-    .status-blocked{color:var(--red)}
-    .status-expired{color:var(--orange)}
-
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      justify-content:flex-end;
-    }
-
-    .actions button{
-      padding:9px 11px;
-      border:1px solid #54257c;
-      border-radius:8px;
-      color:#fff;
-      background:#8219ee;
-      font-weight:800;
-      font-size:12px;
-    }
-
-    .actions button.alt{background:#271132}
-    .actions button.danger{background:#9b193d;border-color:#bf2a56}
-
-    .logs{display:grid;gap:8px}
-    .log{
-      padding:13px 14px;
-      border:1px solid #321746;
-      border-radius:10px;
-      background:#08050d;
-    }
-
-    .log strong{color:#ca64ff}
-    .log small{display:block;margin-top:5px;color:#8f829b}
-    .empty{padding:24px;text-align:center;color:#8f829b}
-
-    @media(max-width:1100px){
-      .form-grid{grid-template-columns:1fr 1fr}
-      .user{grid-template-columns:1fr 1fr}
-      .actions{grid-column:span 2;justify-content:flex-start}
-    }
-
-    @media(max-width:760px){
-      .topbar,.panel-head{flex-direction:column;align-items:stretch}
-      .top-actions{justify-content:space-between}
-      .stats{grid-template-columns:1fr 1fr}
-      .form-grid{grid-template-columns:1fr}
-      .span-2{grid-column:auto}
-      .tools{flex-direction:column;align-items:stretch}
-      .tools input{min-width:0}
-      .user{grid-template-columns:1fr}
-      .actions{grid-column:auto}
-      .panel{padding:18px}
-    }
-
-    @media(max-width:480px){
-      .stats{grid-template-columns:1fr}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyperFPS Admin</title>
+<style>
+:root{--bg:#05020a;--panel:#100719;--line:#5d1d8c;--purple:#8a17ff;--purple2:#c020ef;--text:#fff;--muted:#b8a9c6;--green:#47ed7d;--red:#ff5d76}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 15% 0%,#7e14ff38,transparent 30%),linear-gradient(180deg,#05020a,#020104)}
+button,input,select{font:inherit}.hidden{display:none!important}.login{min-height:100vh;display:grid;place-items:center;padding:24px}.card{width:min(470px,94vw);padding:34px;border:1px solid var(--purple);border-radius:22px;background:#09040ff5;box-shadow:0 0 80px #7918ff47}.logo{width:100px;height:100px;margin:0 auto 18px;border-radius:25px;display:grid;place-items:center;font-size:34px;font-weight:1000;background:linear-gradient(135deg,var(--purple),var(--purple2))}.card h1{text-align:center;margin:0 0 8px}.card p{text-align:center;color:var(--muted)}
+input,select{width:100%;padding:14px 15px;border:1px solid #45255a;border-radius:10px;background:#08050d;color:#fff;outline:none}.btn{border:0;border-radius:10px;color:#fff;font-weight:900;padding:13px 17px;background:linear-gradient(90deg,#7813eb,#bb20ee);cursor:pointer}.btn.full{width:100%}.btn.secondary{background:#241030;border:1px solid #5b2977}.message{min-height:22px;margin-top:14px;color:var(--red)}
+.topbar,main{width:min(1500px,94vw);margin:auto}.topbar{padding:34px 0 22px;display:flex;justify-content:space-between;align-items:center}.topbar h1{margin:0;font-size:34px}.eyebrow{margin:0 0 5px;color:#c66cff;font-size:11px;font-weight:900;letter-spacing:.18em}.top-actions{display:flex;align-items:center;gap:14px}.online{color:var(--green);font-weight:800}main{padding-bottom:50px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stats article{padding:20px;border:1px solid #351545;border-radius:15px;background:linear-gradient(180deg,#140821,#09050f)}.stats span{color:var(--muted)}.stats strong{display:block;margin-top:8px;font-size:34px;color:#c45bff}
+.panel{margin-bottom:18px;padding:26px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#12081e,#09050f)}.panel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:22px}.panel-head h2{margin:0;font-size:26px}
+.form-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1fr .8fr;gap:14px;align-items:end}label{display:flex;flex-direction:column;gap:8px;color:#dfd2e8;font-size:13px;font-weight:700}.span2{grid-column:span 2}.generated{margin-top:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:1px solid #4e2171;border-radius:12px;background:#08050d}.generated code{word-break:break-all}.generated .btn{margin-left:auto}.tools{display:flex;gap:10px}.tools input{min-width:300px}
+.users,.logs{display:grid;gap:10px}.user{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr 1fr auto;gap:14px;align-items:center;padding:16px;border:1px solid #3b1a50;border-radius:12px;background:#08050d}.user small{color:var(--muted)}.label{font-size:11px;color:#8e7c9d;text-transform:uppercase}.value{margin-top:4px;font-size:13px}.status-active{color:var(--green)}.status-blocked{color:var(--red)}.actions{display:flex;flex-wrap:wrap;gap:8px}.actions button{padding:9px 11px;border:1px solid #54257c;border-radius:8px;color:#fff;background:#8219ee;font-weight:800;cursor:pointer}.actions button.alt{background:#271132}.log{padding:13px 14px;border:1px solid #321746;border-radius:10px;background:#08050d}.log strong{color:#ca64ff}.log small{display:block;margin-top:5px;color:#8f829b}.empty{padding:24px;text-align:center;color:#8f829b}
+@media(max-width:900px){.form-grid,.stats{grid-template-columns:1fr 1fr}.user{grid-template-columns:1fr 1fr}}@media(max-width:650px){.topbar,.panel-head{flex-direction:column;align-items:stretch}.form-grid,.stats,.user{grid-template-columns:1fr}.span2{grid-column:auto}.tools{flex-direction:column}.tools input{min-width:0}}
+</style>
 </head>
 <body>
-  <section id="loginView" class="login">
-    <form id="loginForm" class="login-card">
-      <div class="logo">HF</div>
-      <h1>HYPERFPS ADMIN</h1>
-      <p>Gerenciamento de usuários e licenças</p>
-
-      <input id="username" type="text" value="admin" placeholder="Usuário" autocomplete="username" required>
-      <input id="password" type="password" placeholder="Senha" autocomplete="current-password" required>
-
-      <button class="btn full" type="submit">ENTRAR</button>
-      <div id="loginMessage" class="message"></div>
-    </form>
-  </section>
-
-  <section id="dashboardView" class="app hidden">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">HYPER FPS • LICENSE SYSTEM</p>
-        <h1>HyperFPS Admin</h1>
-      </div>
-
-      <div class="top-actions">
-        <span id="apiStatus" class="online">● API ONLINE</span>
-        <button id="logout" class="btn" type="button">SAIR</button>
-      </div>
-    </header>
-
-    <main>
-      <section class="stats">
-        <article><span>Total</span><strong id="totalUsers">0</strong></article>
-        <article><span>Ativos</span><strong id="activeUsers">0</strong></article>
-        <article><span>Bloqueados</span><strong id="blockedUsers">0</strong></article>
-        <article><span>Expirados</span><strong id="expiredUsers">0</strong></article>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">NOVO ACESSO</p>
-            <h2>Criar usuário</h2>
-          </div>
-        </div>
-
-        <div class="form-grid">
-          <label>
-            Usuário
-            <input id="newUsername" type="text" placeholder="Ex.: streamer">
-          </label>
-
-          <label>
-            Senha
-            <input id="newPassword" type="password" placeholder="Senha do usuário">
-          </label>
-
-          <label>
-            E-mail
-            <input id="email" type="email" placeholder="E-mail (opcional)">
-          </label>
-
-          <label>
-            Plano
-            <select id="plan">
-              <option value="Mensal">Mensal</option>
-              <option value="Trimestral">Trimestral</option>
-              <option value="Semestral">Semestral</option>
-              <option value="Premium">Premium</option>
-            </select>
-          </label>
-
-          <label>
-            Dias
-            <input id="days" type="number" min="1" max="3650" value="30">
-          </label>
-
-          <label class="span-2">
-            Key personalizada
-            <input id="customKey" type="text" placeholder="Opcional">
-          </label>
-
-          <button id="createUser" class="btn span-2" type="button">GERAR USUÁRIO E KEY</button>
-        </div>
-
-        <div id="generatedBox" class="generated hidden">
-          <span>KEY GERADA:</span>
-          <code id="generatedKey"></code>
-          <button id="copyGenerated" class="btn small secondary" type="button">COPIAR</button>
-        </div>
-
-        <div id="actionMessage" class="message"></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">GERENCIAMENTO</p>
-            <h2>Usuários</h2>
-          </div>
-
-          <div class="tools">
-            <input id="search" type="search" placeholder="Pesquisar usuário ou key">
-            <button id="refresh" class="btn" type="button">ATUALIZAR</button>
-          </div>
-        </div>
-
-        <div id="usersList" class="users">
-          <div class="empty">Nenhum usuário carregado.</div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">HISTÓRICO</p>
-            <h2>Logs recentes</h2>
-          </div>
-        </div>
-
-        <div id="logsList" class="logs">
-          <div class="empty">Sem logs disponíveis.</div>
-        </div>
-      </section>
-    </main>
-  </section>
-
-  <script>
-    /*
-      O painel usa o mesmo domínio em que está hospedado.
-      Rotas esperadas:
-      POST   /api/login
-      GET    /api/dashboard
-      GET    /api/licenses
-      GET    /api/logs
-      POST   /api/license/create
-      POST   /api/license/reset-hwid
-      POST   /api/license/renew
-      POST   /api/license/block
-      POST   /api/license/unblock
-      DELETE /api/license/:key
-    */
-
-    const API_URL = window.location.origin;
-    let token = sessionStorage.getItem('hyper_admin_token') || '';
-    let users = [];
-
-    const $ = (id) => document.getElementById(id);
-
-    function esc(value){
-      return String(value ?? '').replace(/[&<>'"]/g, (char) => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        "'":'&#39;',
-        '"':'&quot;'
-      })[char]);
-    }
-
-    async function api(path, options = {}){
-      const headers = {
-        'Content-Type':'application/json',
-        ...(options.headers || {})
-      };
-
-      if(token) headers.Authorization = `Bearer ${token}`;
-
-      const response = await fetch(`${API_URL}${path}`, {
-        ...options,
-        headers
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if(!response.ok){
-        throw new Error(data.error || data.message || `Erro HTTP ${response.status}`);
-      }
-
-      return data;
-    }
-
-    function showAction(message, error = false){
-      $('actionMessage').textContent = message || '';
-      $('actionMessage').style.color = error ? '#ff5d76' : '#45ec79';
-    }
-
-    $('loginForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      $('loginMessage').textContent = 'Entrando...';
-
-      try{
-        const data = await api('/api/login', {
-          method:'POST',
-          body:JSON.stringify({
-            username:$('username').value.trim(),
-            password:$('password').value
-          })
-        });
-
-        token = data.token;
-        sessionStorage.setItem('hyper_admin_token', token);
-        await openDashboard();
-      }catch(error){
-        $('loginMessage').textContent = error.message;
-      }
-    });
-
-    async function openDashboard(){
-      $('loginView').classList.add('hidden');
-      $('dashboardView').classList.remove('hidden');
-      await refreshAll();
-    }
-
-    async function loadDashboard(){
-      const data = await api('/api/dashboard');
-
-      $('totalUsers').textContent = data.totalUsers ?? data.totalKeys ?? 0;
-      $('activeUsers').textContent = data.active ?? 0;
-      $('blockedUsers').textContent = data.blocked ?? 0;
-      $('expiredUsers').textContent = data.expired ?? 0;
-    }
-
-    async function loadUsers(){
-      const data = await api('/api/licenses');
-      users = Array.isArray(data) ? data : (data.users || data.licenses || []);
-      renderUsers();
-    }
-
-    function renderUsers(){
-      const search = $('search').value.trim().toLowerCase();
-
-      const filtered = users.filter((item) => {
-        const text = [
-          item.username,
-          item.clientName,
-          item.email,
-          item.key,
-          item.plan,
-          item.status
-        ].filter(Boolean).join(' ').toLowerCase();
-
-        return text.includes(search);
-      });
-
-      if(!filtered.length){
-        $('usersList').innerHTML = '<div class="empty">Nenhum usuário encontrado.</div>';
-        return;
-      }
-
-      $('usersList').innerHTML = filtered.map((item) => {
-        const username = item.username || item.clientName || 'Sem nome';
-        const plan = item.plan || 'Licença';
-        const status = item.status || 'active';
-        const statusLabel = status === 'active' ? 'Ativo' : status === 'blocked' ? 'Bloqueado' : 'Expirado';
-        const hwid = item.hwid ? 'Vinculado' : 'Livre';
-        const key = item.key || '';
-        const days = item.daysRemaining ?? item.days ?? '-';
-        const safeKey = encodeURIComponent(key);
-
-        return `
-          <article class="user">
-            <div>
-              <strong>${esc(username)}</strong>
-              <small>${esc(plan)}</small>
-            </div>
-
-            <div>
-              <div class="label">Status</div>
-              <div class="value status-${esc(status)}">${esc(statusLabel)}</div>
-            </div>
-
-            <div>
-              <div class="label">HWID</div>
-              <div class="value">${esc(hwid)}</div>
-            </div>
-
-            <div>
-              <div class="label">Dias</div>
-              <div class="value">${esc(days)}</div>
-            </div>
-
-            <div>
-              <div class="label">Key</div>
-              <div class="value">${esc(key)}</div>
-            </div>
-
-            <div class="actions">
-              <button class="alt" type="button" onclick="copyKey(decodeURIComponent('${safeKey}'))">Copiar</button>
-              <button type="button" onclick="resetHwid(decodeURIComponent('${safeKey}'))">Reset HWID</button>
-              <button type="button" onclick="renewUser(decodeURIComponent('${safeKey}'))">Renovar</button>
-              <button type="button" onclick="toggleBlock(decodeURIComponent('${safeKey}'),'${esc(status)}')">
-                ${status === 'blocked' ? 'Desbloquear' : 'Bloquear'}
-              </button>
-              <button class="danger" type="button" onclick="deleteUser(decodeURIComponent('${safeKey}'))">Excluir</button>
-            </div>
-          </article>
-        `;
-      }).join('');
-    }
-
-    $('createUser').addEventListener('click', async () => {
-      const username = $('newUsername').value.trim();
-      const password = $('newPassword').value;
-      const email = $('email').value.trim();
-      const plan = $('plan').value;
-      const days = Number($('days').value || 30);
-      const customKey = $('customKey').value.trim();
-
-      if(!username){
-        showAction('Digite o nome do usuário.', true);
-        return;
-      }
-
-      if(!password){
-        showAction('Digite uma senha para o usuário.', true);
-        return;
-      }
-
-      const payload = {
-        username,
-        clientName:username,
-        password,
-        email,
-        plan,
-        days
-      };
-
-      if(customKey) payload.key = customKey;
-
-      try{
-        showAction('Gerando usuário e key...');
-
-        const created = await api('/api/license/create', {
-          method:'POST',
-          body:JSON.stringify(payload)
-        });
-
-        const key = created.key || created.license?.key || created.user?.key || '';
-
-        $('generatedKey').textContent = key;
-        $('generatedBox').classList.remove('hidden');
-        $('customKey').value = '';
-
-        showAction('Usuário e licença criados com sucesso.');
-        await refreshAll();
-      }catch(error){
-        showAction(error.message, true);
-      }
-    });
-
-    $('copyGenerated').addEventListener('click', async () => {
-      const key = $('generatedKey').textContent;
-      if(!key) return;
-      await navigator.clipboard.writeText(key);
-      showAction('Key copiada.');
-    });
-
-    $('search').addEventListener('input', renderUsers);
-    $('refresh').addEventListener('click', refreshAll);
-
-    window.copyKey = async (key) => {
-      await navigator.clipboard.writeText(key);
-      showAction('Key copiada.');
-    };
-
-    window.resetHwid = async (key) => {
-      if(!confirm('Resetar o HWID deste usuário?')) return;
-
-      try{
-        await api('/api/license/reset-hwid', {
-          method:'POST',
-          body:JSON.stringify({key})
-        });
-
-        showAction('HWID resetado.');
-        await refreshAll();
-      }catch(error){
-        showAction(error.message, true);
-      }
-    };
-
-    window.renewUser = async (key) => {
-      const value = prompt('Adicionar quantos dias?', '30');
-      if(value === null) return;
-
-      const days = Number(value);
-
-      if(!Number.isInteger(days) || days < 1){
-        showAction('Quantidade de dias inválida.', true);
-        return;
-      }
-
-      try{
-        await api('/api/license/renew', {
-          method:'POST',
-          body:JSON.stringify({key,days})
-        });
-
-        showAction('Licença renovada.');
-        await refreshAll();
-      }catch(error){
-        showAction(error.message, true);
-      }
-    };
-
-    window.toggleBlock = async (key, status) => {
-      const action = status === 'blocked' ? 'unblock' : 'block';
-
-      try{
-        await api(`/api/license/${action}`, {
-          method:'POST',
-          body:JSON.stringify({key})
-        });
-
-        showAction(action === 'block' ? 'Usuário bloqueado.' : 'Usuário desbloqueado.');
-        await refreshAll();
-      }catch(error){
-        showAction(error.message, true);
-      }
-    };
-
-    window.deleteUser = async (key) => {
-      if(!confirm('Excluir este usuário permanentemente?')) return;
-
-      try{
-        await api(`/api/license/${encodeURIComponent(key)}`, {
-          method:'DELETE'
-        });
-
-        showAction('Usuário excluído.');
-        await refreshAll();
-      }catch(error){
-        showAction(error.message, true);
-      }
-    };
-
-    async function loadLogs(){
-      try{
-        const data = await api('/api/logs');
-        const logs = Array.isArray(data) ? data : (data.logs || []);
-
-        $('logsList').innerHTML = logs.slice(0,20).map((log) => `
-          <div class="log">
-            <strong>${esc(log.type || log.action || 'Atividade')}</strong>
-            <div>${esc(typeof log.details === 'string' ? log.details : JSON.stringify(log.details || {}))}</div>
-            <small>${new Date(log.createdAt || log.created_at || Date.now()).toLocaleString('pt-BR')}</small>
-          </div>
-        `).join('') || '<div class="empty">Sem logs disponíveis.</div>';
-      }catch(error){
-        $('logsList').innerHTML = `<div class="empty">${esc(error.message)}</div>`;
-      }
-    }
-
-    async function refreshAll(){
-      await Promise.all([
-        loadDashboard(),
-        loadUsers(),
-        loadLogs()
-      ]);
-    }
-
-    $('logout').addEventListener('click', () => {
-      sessionStorage.removeItem('hyper_admin_token');
-      location.reload();
-    });
-
-    if(token){
-      openDashboard().catch(() => {
-        sessionStorage.removeItem('hyper_admin_token');
-        token = '';
-        $('dashboardView').classList.add('hidden');
-        $('loginView').classList.remove('hidden');
-      });
-    }
-  </script>
+<section id="loginView" class="login">
+<form id="adminForm" class="card">
+<div class="logo">HF</div><h1>HYPERFPS ADMIN</h1>
+<p>Use o ADMIN_TOKEN configurado na Vercel.</p>
+<input id="adminToken" type="password" placeholder="ADMIN_TOKEN" required>
+<button class="btn full" type="submit">ENTRAR</button>
+<div id="loginMessage" class="message"></div>
+</form>
+</section>
+
+<section id="dashboardView" class="hidden">
+<header class="topbar">
+<div><p class="eyebrow">HYPER FPS • LICENSE SYSTEM</p><h1>HyperFPS Admin</h1></div>
+<div class="top-actions"><span class="online">● API ONLINE</span><button id="logout" class="btn">SAIR</button></div>
+</header>
+<main>
+<section class="stats">
+<article><span>Total</span><strong id="totalUsers">0</strong></article>
+<article><span>Ativos</span><strong id="activeUsers">0</strong></article>
+<article><span>Bloqueados</span><strong id="blockedUsers">0</strong></article>
+<article><span>HWIDs vinculados</span><strong id="boundUsers">0</strong></article>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><p class="eyebrow">NOVO ACESSO</p><h2>Criar usuário</h2></div></div>
+<div class="form-grid">
+<label>Usuário<input id="newUsername" placeholder="Ex.: streamer"></label>
+<label>Senha<input id="newPassword" type="password" placeholder="Mínimo 8 caracteres"></label>
+<label>E-mail<input id="email" type="email" placeholder="Opcional"></label>
+<label>Plano<select id="plan"><option>Mensal</option><option>Trimestral</option><option>Semestral</option><option>Premium</option></select></label>
+<label>Dias<input id="days" type="number" min="1" max="3650" value="30"></label>
+<button id="createUser" class="btn span2" type="button">GERAR USUÁRIO E KEY</button>
+</div>
+<div id="generatedBox" class="generated hidden"><span>KEY GERADA:</span><code id="generatedKey"></code><button id="copyGenerated" class="btn secondary">COPIAR</button></div>
+<div id="actionMessage" class="message"></div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><p class="eyebrow">GERENCIAMENTO</p><h2>Usuários</h2></div><div class="tools"><input id="search" placeholder="Pesquisar usuário ou e-mail"><button id="refresh" class="btn">ATUALIZAR</button></div></div>
+<div id="usersList" class="users"><div class="empty">Nenhum usuário carregado.</div></div>
+</section>
+
+<section class="panel"><div class="panel-head"><div><p class="eyebrow">HISTÓRICO</p><h2>Logs</h2></div></div><div id="logsList" class="logs"><div class="empty">Sem logs.</div></div></section>
+</main>
+</section>
+
+<script>
+const API=window.location.origin;let adminToken=sessionStorage.getItem('hyper_admin_token')||'';let users=[];const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+async function api(path,options={}){const headers={'Content-Type':'application/json','x-admin-token':adminToken,...(options.headers||{})};const r=await fetch(API+path,{...options,headers});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||d.error||`Erro HTTP ${r.status}`);return d}
+function msg(t,e=false){$('actionMessage').textContent=t||'';$('actionMessage').style.color=e?'#ff5d76':'#47ed7d'}
+function openDash(){$('loginView').classList.add('hidden');$('dashboardView').classList.remove('hidden')}
+function stats(){$('totalUsers').textContent=users.length;$('activeUsers').textContent=users.filter(u=>u.status==='active').length;$('blockedUsers').textContent=users.filter(u=>u.status==='blocked').length;$('boundUsers').textContent=users.filter(u=>u.hwid_hash).length}
+function render(){const q=$('search').value.trim().toLowerCase();const list=users.filter(u=>`${u.username||''} ${u.email||''} ${u.plan||''} ${u.status||''}`.toLowerCase().includes(q));$('usersList').innerHTML=list.map(u=>{const exp=u.expires_at?new Date(u.expires_at).toLocaleDateString('pt-BR'):'Sem expiração';return `<article class="user"><div><strong>${esc(u.username)}</strong><small>${esc(u.plan||'Premium')}</small></div><div><div class="label">Status</div><div class="value status-${esc(u.status)}">${esc(u.status)}</div></div><div><div class="label">HWID</div><div class="value">${u.hwid_hash?'Vinculado':'Livre'}</div></div><div><div class="label">Expira</div><div class="value">${esc(exp)}</div></div><div><div class="label">E-mail</div><div class="value">${esc(u.email||'-')}</div></div><div class="actions"><button class="alt" onclick="resetHwid('${esc(u.id)}')">Reset HWID</button><button onclick="toggleStatus('${esc(u.id)}','${esc(u.status)}')">${u.status==='blocked'?'Desbloquear':'Bloquear'}</button></div></article>`}).join('')||'<div class="empty">Nenhum usuário encontrado.</div>'}
+async function loadUsers(){const d=await api('/api/admin/users');users=d.users||[];render();stats()}
+async function loadLogs(){try{const d=await api('/api/admin/logs');$('logsList').innerHTML=(d.logs||[]).slice(0,50).map(l=>`<div class="log"><strong>${l.success?'LOGIN APROVADO':'LOGIN NEGADO'}</strong><div>Usuário: ${esc(l.username||'-')} | IP: ${esc(l.ip||'-')}</div><small>${new Date(l.created_at||Date.now()).toLocaleString('pt-BR')}</small></div>`).join('')||'<div class="empty">Sem logs.</div>'}catch(e){$('logsList').innerHTML=`<div class="empty">${esc(e.message)}</div>`}}
+$('adminForm').addEventListener('submit',async e=>{e.preventDefault();adminToken=$('adminToken').value.trim();try{await loadUsers();sessionStorage.setItem('hyper_admin_token',adminToken);openDash();loadLogs()}catch(err){$('loginMessage').textContent=err.message}});
+$('createUser').onclick=async()=>{const username=$('newUsername').value.trim(),password=$('newPassword').value,email=$('email').value.trim(),plan=$('plan').value,days=Number($('days').value||30);if(!username)return msg('Informe o usuário.',true);if(!password||password.length<8)return msg('A senha deve ter pelo menos 8 caracteres.',true);try{const d=await api('/api/admin/users',{method:'POST',body:JSON.stringify({username,password,email,plan,days})});$('generatedKey').textContent=d.licenseKey||'';$('generatedBox').classList.remove('hidden');msg('Usuário criado com sucesso.');await loadUsers()}catch(e){msg(e.message,true)}};
+$('copyGenerated').onclick=async()=>{await navigator.clipboard.writeText($('generatedKey').textContent);msg('Key copiada.')};
+window.resetHwid=async id=>{if(!confirm('Resetar o HWID?'))return;try{await api(`/api/admin/users/${encodeURIComponent(id)}/reset-hwid`,{method:'POST'});msg('HWID resetado.');await loadUsers()}catch(e){msg(e.message,true)}};
+window.toggleStatus=async(id,current)=>{const status=current==='blocked'?'active':'blocked';const reason=status==='blocked'?(prompt('Motivo:','Bloqueado pelo administrador')||'Bloqueado pelo administrador'):null;try{await api(`/api/admin/users/${encodeURIComponent(id)}/status`,{method:'PATCH',body:JSON.stringify({status,reason})});msg(status==='blocked'?'Usuário bloqueado.':'Usuário desbloqueado.');await loadUsers()}catch(e){msg(e.message,true)}};
+$('refresh').onclick=async()=>{try{await Promise.all([loadUsers(),loadLogs()]);msg('Atualizado.')}catch(e){msg(e.message,true)}};$('search').oninput=render;$('logout').onclick=()=>{sessionStorage.removeItem('hyper_admin_token');location.reload()};
+if(adminToken){loadUsers().then(()=>{openDash();loadLogs()}).catch(()=>{sessionStorage.removeItem('hyper_admin_token');adminToken=''})}
+</script>
 </body>
 </html>
