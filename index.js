@@ -44,7 +44,7 @@ app.use(
       process.env.CORS_ORIGIN === '*'
         ? true
         : process.env.CORS_ORIGIN,
-    methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
       'Authorization',
@@ -743,6 +743,73 @@ app.patch(
         success: false,
         message:
           'Erro ao alterar status.'
+      });
+    }
+  }
+);
+
+
+/* =========================
+   EXCLUIR USUÁRIO / KEY
+========================= */
+
+app.delete(
+  '/api/admin/users/:id',
+  adminOnly,
+  async (req, res) => {
+    try {
+      const userId = String(req.params.id || '').trim();
+
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID do usuário não informado.'
+        });
+      }
+
+      const {
+        data: existingUser,
+        error: findError
+      } = await supabase
+        .from('users')
+        .select('id,username')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (findError) {
+        throw findError;
+      }
+
+      if (!existingUser) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado.'
+        });
+      }
+
+      const { error: deleteError } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', userId);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Usuário e key excluídos.',
+        user: existingUser
+      });
+    } catch (error) {
+      console.error(
+        'Erro ao excluir usuário:',
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao excluir usuário.'
       });
     }
   }
